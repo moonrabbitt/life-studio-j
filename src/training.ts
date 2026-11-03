@@ -92,7 +92,7 @@ function weekDrafts(week: 1 | 2): Draft[] {
       day: 1,
       slug: "walk",
       kind: "walk",
-      title: "Easy walk",
+      title: "Easy walk with Seb",
       area: "move",
       time: "18:30",
       duration: 20,
@@ -129,22 +129,20 @@ function weekDrafts(week: 1 | 2): Draft[] {
     },
     {
       day: 2,
-      slug: "dance",
-      kind: "dance",
-      title: "Dance practice",
+      slug: "walk-with-seb",
+      kind: "walk",
+      title: "Walk with Seb",
       area: "move",
       time: "19:00",
       duration: 20,
       mode: "flexible",
       intensity: "light",
-      goalId: "goal-dance",
       details: [
-        "15–20 minutes of comfortable home practice.",
-        "Going to a class instead? Log it as a class with its real time and length.",
-        "A class can be much harder than home practice, so keep the next day gentle.",
-        "Afterwards, note something you enjoyed or want to practise (optional).",
+        "Head out with Seb for a relaxed walk on a familiar route.",
+        "Let the pace and length suit you both; leave time for sniffing stops.",
+        "Notice a route you would like to try together another day.",
       ],
-      shortVersion: { duration: 10, note: "Ten minutes of the moves you enjoy most." },
+      shortVersion: { duration: 10, note: "A short stroll with Seb close to home." },
     },
     {
       day: 3,
@@ -161,17 +159,17 @@ function weekDrafts(week: 1 | 2): Draft[] {
       day: 3,
       slug: "create",
       kind: "create",
-      title: first ? "Creative time: one tiny output" : "Creative time: continue the idea",
+      title: first ? "Reading: a quiet chapter" : "Solo trip to Asia: explore one idea",
       area: "create",
       time: "19:30",
       duration: 20,
       mode: "flexible",
       details: first
         ? [
-            "Writing, music or film: choose one idea.",
-            "Make one tiny output: a rough paragraph, a music sketch or a film idea.",
+            "Pick up a book you want to read, perhaps a favourite fantasy story.",
+            "Enjoy a chapter or a few pages; there is no target to hit.",
           ]
-        : ["Continue last week’s idea with one more tiny output."],
+        : ["Look at one place in Asia you might enjoy exploring solo. Save a note; no booking or date needed."],
     },
     {
       day: 4,
@@ -190,7 +188,7 @@ function weekDrafts(week: 1 | 2): Draft[] {
       day: 5,
       slug: "outdoor-walk",
       kind: "walk",
-      title: "Outdoor walk",
+      title: "Explore outdoors with Seb",
       area: "move",
       time: "10:30",
       duration: 25,
@@ -1161,7 +1159,7 @@ export const PHASES = [
     id: 1,
     weeks: 2,
     title: "Restart phase",
-    body: "Establish comfortable, repeatable activity: one gym session, walks, dance and recovery.",
+    body: "Establish comfortable, repeatable activity: one gym session, walks with Seb and recovery.",
     ready: "Move on when you have found a week you can comfortably repeat, without pain.",
   },
   {
@@ -1215,11 +1213,6 @@ export const SOURCES = [
   {
     label: "NHS: Couch to 5K running plan",
     url: "https://www.nhs.uk/better-health/get-active/get-running-with-couch-to-5k/couch-to-5k-running-plan/",
-  },
-  {
-    // The original PDF link now returns 404; IADMS lists it under its resource papers.
-    label: "IADMS: “Dance Fitness” resource paper (see Resource Papers)",
-    url: "https://iadms.org/",
   },
   {
     label: "Lally et al. (2010): how habits are formed",

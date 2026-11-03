@@ -1,8 +1,8 @@
 {
-  "title": "Life Studio",
-  "description": "A warm, private place to shape daily rhythms, reflection, creativity, connection, movement, money, and home life.",
+  "title": "James’s Life Studio",
+  "description": "Walks with Seb, books, LEGO, gaming, and room for a solo adventure in Asia.",
   "icons": {
-    "icon": "/life-studio-icon.svg"
+    "icon": "/sebby-favicon-v1.png"
   },
   "robots": {
     "index": false

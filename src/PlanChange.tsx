@@ -195,7 +195,7 @@ export function ChangeDirection({ state, update, onDone, onCancel, onEditProfile
       </p>
       <label>
         <span>What are you training for now?</span>
-        <textarea rows={2} value={purpose} onChange={(event) => setPurpose(event.target.value)} placeholder="e.g. Feel strong for a dance intensive in March" />
+        <textarea rows={2} value={purpose} onChange={(event) => setPurpose(event.target.value)} placeholder="e.g. Feel comfortable walking and exploring on a solo trip to Asia" />
       </label>
       <label>
         <span>What’s changed?</span>
@@ -233,7 +233,7 @@ export function ChangeDirection({ state, update, onDone, onCancel, onEditProfile
       </label>
       <label>
         <span>Anything to keep in your week? (optional)</span>
-        <input value={keep} onChange={(event) => setKeep(event.target.value)} placeholder="e.g. Wednesday dance class" />
+        <input value={keep} onChange={(event) => setKeep(event.target.value)} placeholder="e.g. Regular walks with Seb" />
       </label>
       <p className="capture-disclaimer">
         Studio also uses your training answers and recent logs.{" "}

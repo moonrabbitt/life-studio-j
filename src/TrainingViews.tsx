@@ -374,8 +374,8 @@ export function NextActionCard({
         <p className="eyebrow">Restart phase · 2 weeks</p>
         <h2>A gentle starter fortnight is ready to review.</h2>
         <p>
-          One gym session, easy walks, dance, a recovery day, and small slots
-          for investing, creativity and friends. They’re proposals you can edit;
+          One gym session, walks with Seb, a recovery day, and small slots
+          for reading, trip ideas and friends. They’re proposals you can edit;
           nothing is booked.
         </p>
         <div className="inline-actions">
@@ -1171,7 +1171,7 @@ export function Roadmap({
   const story = journeyEntries(state)
 
   return (
-    <Modal title="Training plan" eyebrow={custom ? "Your plan, one phase at a time" : "Running, gym and dance as one programme"} onClose={onClose} wide>
+    <Modal title="Training plan" eyebrow={custom ? "Your plan, one phase at a time" : "Walking, strength and recovery at your pace"} onClose={onClose} wide>
       <div className="roadmap">
         <Art className="roadmap__art" src="/assets/movement-path.jpg" />
         {changing ? (
@@ -1207,7 +1207,7 @@ export function Roadmap({
         {tab === "phases" && (
           <>
             <p className="capture-disclaimer">
-              Running, gym and dance as one programme. Lengths are a guide for planning; move to the next
+              Walking, strength and recovery at your pace. Lengths are a guide for planning; move to the next
               phase when your logs say you’re ready, not because a week has passed.
             </p>
             {timeline.overRace && (
@@ -1473,29 +1473,6 @@ export function GymIntake({
           ["machines", "Mostly machines"],
           ["dumbbells", "Dumbbells and bench"],
           ["home", "Home / bodyweight"],
-          ["not-sure", "Not sure"],
-        ]}
-      />
-      <Chips
-        label="How often do you dance now?"
-        value={profile.danceFrequency}
-        onChange={(value) => set("danceFrequency", value)}
-        options={[
-          ["none", "Not yet"],
-          ["home", "Home practice"],
-          ["weekly", "About one class a week"],
-          ["more", "Two or more"],
-          ["not-sure", "Not sure"],
-        ]}
-      />
-      <Chips
-        label="How demanding are your classes?"
-        value={profile.danceIntensity}
-        onChange={(value) => set("danceIntensity", value)}
-        options={[
-          ["gentle", "Gentle"],
-          ["moderate", "Moderate"],
-          ["hard", "Hard"],
           ["not-sure", "Not sure"],
         ]}
       />
@@ -2110,7 +2087,7 @@ function DoTimer({ item, short, plan, onFinish }: { item: PlanItem; short: boole
 
   return (
     <div className="do-timer">
-      {item.kind === "dance" && <Art className="space-banner" src="/assets/dance-floor.jpg" />}
+      {item.kind === "walk" && <Art className="space-banner" src="/assets/james-walks-seb-v1.jpg" alt="James walking with Seb" />}
       {short && item.shortVersion && (
         <p className="do-timer__short">
           <Zap size={16} /> Short version: {item.shortVersion.note}

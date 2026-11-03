@@ -1,3 +1,4 @@
+import { play } from "./sounds"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { getVoiceNote } from "./audioStore"
 import { demoState, emptyState } from "./data"
@@ -15,6 +16,7 @@ import {
 import { guessKind } from "./assistant"
 import { exercisesFromDetails } from "./training"
 import type { AppState } from "./types"
+import { normaliseNames } from "./names"
 
 const STORAGE_KEY = "life-studio:v1"
 const UPDATED_KEY = "life-studio:updatedAt"
@@ -23,7 +25,7 @@ export type SyncStatus = "off" | "syncing" | "synced" | "offline" | "locked" | "
 
 function normalise(value: Partial<AppState> | null | undefined): AppState | null {
   if (!value || value.version !== 1 || !Array.isArray(value.plan)) return null
-  const state = { ...demoState, ...value } as AppState
+  const state = normaliseNames({ ...demoState, ...value } as AppState)
   // Movement plans without a kind can't be started or given exercises; work the kind out.
   const plan = state.plan.map((item) =>
     item.area === "move" &&
@@ -113,7 +115,7 @@ export function useLifeStudioState() {
   }, [])
 
   const commit = useCallback((recipe: (current: AppState) => AppState) => {
-    setState((current) => reconcileProjects(recipe(current)))
+    setState((current) => normaliseNames(reconcileProjects(recipe(current))))
     setUpdatedAt(Date.now())
     setChanges((value) => value + 1)
   }, [])
@@ -130,6 +132,7 @@ export function useLifeStudioState() {
     (recipe: (current: AppState) => AppState, message: string) => {
       const previous = stateRef.current
       commit(recipe)
+      play("remove")
       setUndo({ message, previous })
       window.clearTimeout(undoTimer.current)
       undoTimer.current = window.setTimeout(() => setUndo(null), 6000)

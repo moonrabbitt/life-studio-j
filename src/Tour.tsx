@@ -3,7 +3,7 @@ import { Art, Button } from "./ui"
 
 const STEPS = [
   {
-    art: "/assets/life-studio-room.jpg",
+    art: "/assets/james-reading-v1.jpg",
     title: "Today",
     body: "Just today, kept small. Tap Start on a session to follow it step by step, or Done on anything else. Low on energy? Choose “Keep it small”.",
   },
@@ -18,12 +18,12 @@ const STEPS = [
     body: "Your goals and their milestones, your training phases, and the story of what you’ve actually done. Tick a milestone and it’s celebrated.",
   },
   {
-    art: "/assets/creative-tech.jpg",
+    art: "/assets/james-gaming-v2.jpg",
     title: "Studio",
     body: "Ask Studio to plan a workout, move something, log what you did or think something through. It remembers what you told it in About me.",
   },
   {
-    art: "/assets/friends-cafe.jpg",
+    art: "/assets/james-cafe-seb-v1.jpg",
     title: "My space",
     body: "Movement, projects, people, money and home, plus About me (what Studio knows about you) and Settings. The ☰ menu has quick ways in.",
   },

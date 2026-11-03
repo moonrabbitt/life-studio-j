@@ -1,3 +1,4 @@
+import { play } from "./sounds"
 import {
   ArrowDown,
   ArrowLeft,
@@ -6,7 +7,8 @@ import {
   Check,
   ChevronRight,
   MoreHorizontal,
-  Music2,
+  BookOpen,
+  Compass,
   Pencil,
   Plus,
   RotateCcw,
@@ -26,7 +28,7 @@ import { Art, Button, formatDate, IconButton, Modal, SwipeRow, today, uid, useRe
 type Update = (recipe: (current: AppState) => AppState, message?: string) => void
 
 export const GOAL_VS_PROJECT =
-  "A goal changes something about you or your life. A project makes something."
+  "A goal is something you want to move towards. A project turns an idea into manageable steps."
 
 const formatMoney = (pence: number) =>
   new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(pence / 100)
@@ -38,8 +40,10 @@ const formatMoney = (pence: number) =>
 export type CelebrationMessage = { title: string; body: string; big?: boolean }
 
 // Celebrate from anywhere; the app shell shows it.
-export const celebrate = (message: CelebrationMessage) =>
+export const celebrate = (message: CelebrationMessage) => {
+  play(message.big ? "big" : "done")
   window.dispatchEvent(new CustomEvent<CelebrationMessage>("studio:celebrate", { detail: message }))
+}
 
 const AREA_CHEERS: Record<string, string> = {
   connect: "Time with people you care about counts.",
@@ -314,19 +318,25 @@ const syncPlan = (plan: PlanItem[], match: (item: PlanItem) => boolean, done: bo
 // Picks artwork from what the project is about; falls back gracefully if a file is missing.
 function ProjectVisual({ project }: { project: Project }) {
   const lower = `${project.title} ${project.note}`.toLowerCase()
-  const art = /film|video|shoot|camera|director|london light/.test(lower)
-    ? "/assets/film-director.jpg"
-    : /song|music|melod|beat|keyboard|piano|album/.test(lower)
-      ? "/assets/making-music.jpg"
-      : /writ|story|poem|journal|essay|zine|book/.test(lower)
-        ? "/assets/writing-nook.jpg"
-        : /tech|code|light|install|interactive|app|digital|art/.test(lower)
-          ? "/assets/creative-tech.jpg"
-          : "/assets/creative-room.jpg"
+  const reading = /read|book|tolkien|lord of the rings|hobbit/.test(lower)
+  const art = /travel|trip|holiday|asia|japan|kyoto|backpack/.test(lower)
+    ? "/assets/james-solo-travel-v2.jpg"
+    : /lego|brick|star wars|starfighter/.test(lower)
+      ? "/assets/james-lego-v2.jpg"
+      : /gaming|video game|console|playstation|xbox/.test(lower)
+        ? "/assets/james-gaming-v2.jpg"
+        : /walk|hike|hiking|seb/.test(lower)
+          ? "/assets/james-walks-seb-v1.jpg"
+          : reading
+            ? "/assets/james-reading-v1.jpg"
+            : /film|movie|cinema/.test(lower)
+              ? "/assets/james-movie-night-v2.jpg"
+              : "/assets/james-reading-v1.jpg"
+  const Icon = reading ? BookOpen : Compass
   return (
     <div className="project-card__visual">
-      <Music2 size={35} aria-hidden="true" />
-      <Art src={art} fallback="/assets/life-studio-room.jpg" />
+      <Icon size={35} aria-hidden="true" />
+      <Art src={art} fallback="/assets/james-reading-v1.jpg" />
     </div>
   )
 }
@@ -360,11 +370,11 @@ function ProjectForm({ state, onSave, onCancel }: { state: AppState; onSave: (pr
     >
       <label>
         <span>What are you making?</span>
-        <input value={title} onChange={(event) => setTitle(event.target.value)} required autoFocus placeholder="e.g. A short river film" />
+        <input value={title} onChange={(event) => setTitle(event.target.value)} required autoFocus placeholder="e.g. Plan a solo trip to Asia" />
       </label>
       <label>
         <span>What will exist when it’s finished? (optional)</span>
-        <textarea rows={2} value={note} onChange={(event) => setNote(event.target.value)} placeholder="e.g. A two-minute film I can share with friends" />
+        <textarea rows={2} value={note} onChange={(event) => setNote(event.target.value)} placeholder="e.g. Choose a route, set a budget, and leave room to explore" />
       </label>
       <div className="project-form__steps">
         <span className="project-form__label">First small steps</span>
@@ -792,7 +802,7 @@ export function ProjectsSpace({ state, update, close }: { state: AppState; updat
         <>
           <div className="feature-topline">
             <p>
-              <strong>Projects are things you make</strong>, a film, a song, a piece of writing.
+              <strong>Projects are things you make or plan</strong>: a LEGO build, a reading list, or a solo trip to Asia.
               Break one into small steps, send a step to your day, and finish it with a celebration.
               <small className="feature-topline__hint">{GOAL_VS_PROJECT}</small>
             </p>

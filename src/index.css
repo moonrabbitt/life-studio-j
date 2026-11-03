@@ -10392,13 +10392,7 @@ label.setup-review__pick > span {
 :root[data-theme="dark"] .modal-overlay {
   background: rgb(0 0 0 / 55%);
 }
-/* Pictures sit a little dimmer at night */
-:root[data-theme="dark"] :is(.today-hero__image, .art, .project-card__visual img, .week-card__art img, .roadmap__art) {
-  filter: brightness(0.8) saturate(0.9);
-}
-:root[data-theme="dark"] .companion-card img {
-  filter: brightness(0.9);
-}
+/* Keep the illustrations’ natural colours; dark mode changes the surrounding surfaces. */
 :root[data-theme="dark"] .swipe__action.is-neutral {
   background: #56664c;
 }
@@ -10497,3 +10491,84 @@ label.setup-review__pick > span {
   margin: 0.2rem 0;
   font-size: 0.9rem;
 }
+
+
+/* Seb is the studio's companion and recurring visual signature. */
+.page .seb-hero {
+  min-height: 320px;
+  isolation: isolate;
+  background: radial-gradient(ellipse at 78% 40%, #fffdf5 0%, #fff4e5 58%, #f5e2d2 100%);
+  border: 1px solid rgb(255 250 237 / 22%);
+}
+.seb-hero .seb-art {
+  inset: auto -1% 8px auto;
+  z-index: -1;
+  width: 53%;
+  height: 95%;
+  object-fit: contain;
+  object-position: right bottom;
+  filter: none;
+}
+.seb-hero .today-hero__veil { display: none; }
+.seb-hero .seb-content {
+  max-width: 53%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  color: #4b382b;
+}
+.seb-hero .seb-content h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+.seb-hero .seb-content > p:last-child { color: #654d3d; }
+.seb-hero .seb-date {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #8e4a35;
+}
+.seb-date img { width: 18px; height: 18px; flex: none; }
+.seb-paw-trail {
+  position: absolute;
+  z-index: -2;
+  top: 16px;
+  right: 16%;
+  width: 48px;
+  height: 48px;
+  opacity: 0.12;
+  transform: rotate(24deg);
+  pointer-events: none;
+}
+.rail-footer .rail-seb {
+  display: block;
+  width: 130px;
+  height: auto;
+  align-self: center;
+  margin: -0.7rem 0 0.5rem;
+}
+@media (max-width: 699px) {
+  .page .seb-hero { min-height: 235px; padding: 1.25rem 1rem 1.8rem; }
+  .seb-hero .seb-art { right: -6%; width: 58%; height: 88%; }
+  .seb-hero .seb-content { max-width: 57%; margin-top: 1rem; }
+  .page .seb-hero .seb-content h1 { font-size: clamp(1.65rem, 6.3vw, 2.5rem); }
+  .seb-hero .seb-date { font-size: 0.58rem; letter-spacing: 0.06em; }
+  .seb-date img { width: 14px; height: 14px; }
+}
+
+.seb-hero::after { display: none; }
+.page .seb-hero { margin-bottom: 1.5rem; }
+.today-hero--seb + .today-next { margin-top: 0; }
+.space-hero.seb-hero .eyebrow--light { color: #8e4a35; }
+
+.today-hero + :not(.today-next) { margin-top: 1.2rem; }
+
+/* Seb stays white and readable while the banner follows the chosen theme. */
+:root[data-theme="dark"] .page .seb-hero {
+  background: radial-gradient(ellipse at 78% 42%, #3a3a2e 0%, #2c3028 54%, #242923 100%);
+  border-color: rgb(237 210 173 / 13%);
+}
+:root[data-theme="dark"] .seb-hero .seb-content { color: #fff3df; }
+:root[data-theme="dark"] .seb-hero .seb-content > p:last-child { color: #e0d3be; }
+:root[data-theme="dark"] .seb-hero :is(.seb-date, .eyebrow--light) { color: #e8bfa7; }
+:root[data-theme="dark"] .seb-hero .seb-paw-trail { opacity: 0.26; }
+:root[data-theme="dark"] .seb-hero .seb-art { filter: none; }

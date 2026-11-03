@@ -1,3 +1,4 @@
+import { play, setSoundsOn } from "./sounds"
 import {
   ArrowLeft,
   Compass,
@@ -14,7 +15,6 @@ import {
   Coffee,
   Dumbbell,
   Feather,
-  Film,
   Heart,
   Home,
   Lightbulb,
@@ -22,7 +22,7 @@ import {
   MessageCircle,
   Mic,
   MicOff,
-  Music2,
+  Footprints,
   Pause,
   PenLine,
   Play,
@@ -131,7 +131,7 @@ import { NextWeekPlanner, nextWeekDue } from "./NextWeek"
 import { SessionPlanner, type PlannedSession } from "./SessionPlanner"
 import { VoiceNoteList } from "./VoiceNotes"
 import { WeekDigestCard } from "./WeekDigest"
-import { Art, Button, formatDate, IconButton, Modal, RemoveContext, SwipeHint, SwipeRow, today, uid, useRemove } from "./ui"
+import { Art, Button, formatDate, IconButton, Modal, properName, RemoveContext, SwipeHint, SwipeRow, today, uid, useRemove } from "./ui"
 import { useLifeStudioState, type SyncStatus } from "./useLifeStudioState"
 
 type Route = "today" | "plan" | "progress" | "space"
@@ -188,36 +188,7 @@ function AreaMark({ area, compact = false }: { area: Area; compact?: boolean }) 
 }
 
 function LogoMark() {
-  return (
-    <svg
-      className="brand-mark"
-      viewBox="0 0 48 48"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <rect width="48" height="48" rx="15" fill="#34543f" />
-      <path
-        d="M13 36V22.5C13 14.5 17.8 9 24 9s11 5.5 11 13.5V36H13Z"
-        fill="#fffaf0"
-      />
-      <circle cx="25.5" cy="19" r="5.5" fill="#e9b59c" />
-      <path
-        d="M18 34c5.8-1.5 9.6-5.3 12.6-11.4-1.2 6.5-4.7 11.4-10.8 14.1"
-        fill="none"
-        stroke="#34543f"
-        strokeWidth="2.8"
-        strokeLinecap="round"
-      />
-      <path
-        d="M21.5 29.5c-3.8.1-5.7-1.8-5.9-4.8 3.8-.4 6.2 1 6.8 3.9"
-        fill="#9eae8d"
-      />
-      <path
-        d="M26.8 25.2c.5-3.5 2.8-5.1 5.8-4.7.1 3.5-1.7 5.7-4.9 5.8"
-        fill="#9eae8d"
-      />
-    </svg>
-  )
+  return <img className="brand-mark" src="/sebby-icon-192-v1.png" alt="" aria-hidden="true" />
 }
 
 function EmptyState({
@@ -233,7 +204,7 @@ function EmptyState({
 }) {
   return (
     <div className="empty-state">
-      <img src="/assets/samoyed.png" alt="" />
+      <img src="/assets/sebby-bright-v1.png" alt="" />
       <div>
         <h3>{title}</h3>
         <p>{body}</p>
@@ -581,7 +552,7 @@ function TodayView({
                 </button>
               </div>
             </div>
-            <img src="/assets/samoyed.png" alt="" />
+            <img src="/assets/sebby-bright-v1.png" alt="" />
           </section>
           <section className="quick-spaces">
             <div className="section-heading section-heading--small">
@@ -630,15 +601,17 @@ function TodayView({
 
   return (
     <div className={`page today-page is-${part}`}>
-      <section className="today-hero">
+      <section className="today-hero today-hero--seb seb-hero">
         <img
-          src="/assets/life-studio-room.jpg"
-          alt=""
-          className="today-hero__image"
+          src="/assets/sebby-bright-v1.png"
+          alt="Seb resting beside a book and a plant"
+          className="today-hero__image seb-art"
         />
         <div className="today-hero__veil" />
-        <div className="today-hero__content">
-          <p className="eyebrow eyebrow--light">
+        <img className="seb-paw-trail" src="/seb-paw-v1.svg" alt="" aria-hidden="true" />
+        <div className="today-hero__content seb-content">
+          <p className="eyebrow eyebrow--light seb-date">
+            <img src="/seb-paw-v1.svg" alt="" aria-hidden="true" />
             {formatDate(today(), {
               weekday: "long",
               day: "numeric",
@@ -646,7 +619,7 @@ function TodayView({
             })}
           </p>
           <h1>
-            {greeting}{state.name ? `, ${state.name}` : ""}.
+            {greeting}{state.name ? `, ${properName(state.name)}` : ""}.
           </h1>
           <p>What would make today feel a little more like yours?</p>
         </div>
@@ -1161,7 +1134,7 @@ function NewGoalModal({
         }}
       >
         <p className="goal-vs-project">
-          {GOAL_VS_PROJECT} Making something, like a film or a song? Create it in
+          {GOAL_VS_PROJECT} Planning a trip or building something with LEGO? Break it into steps in
           My space → Projects instead.
         </p>
         <label>
@@ -1317,8 +1290,8 @@ const spaceCards: {
   {
     key: "create",
     title: "Projects",
-    description: "Ideas, writing, film, music, and things becoming.",
-    icon: Film,
+    description: "Reading, LEGO builds, gaming, and a solo trip to Asia.",
+    icon: Compass,
     accent: "gold",
   },
   {
@@ -1331,7 +1304,7 @@ const spaceCards: {
   {
     key: "move",
     title: "Movement",
-    description: "Walk, run, dance, build strength, or recover.",
+    description: "Walk with Seb, explore outdoors, build strength, or rest.",
     icon: Heart,
     accent: "sage",
   },
@@ -1360,9 +1333,9 @@ function MySpaceView({
 }) {
   return (
     <div className="page space-page">
-      <header className="space-hero">
-        <img src="/assets/life-studio-room.jpg" alt="" />
-        <div className="space-hero__content">
+      <header className="space-hero seb-hero">
+        <img className="seb-art" src="/assets/sebby-bright-v1.png" alt="Seb resting beside a book and a plant" />
+        <div className="space-hero__content seb-content">
           <p className="eyebrow eyebrow--light">My space</p>
           <h1>Everything you’re making room for.</h1>
           <p>Private, local, and allowed to change with you.</p>
@@ -1769,7 +1742,7 @@ function BreatheSpace({ state, update, close }: SpaceProps) {
               return to normal breathing whenever you need.
             </p>
           </div>
-          <img src="/assets/samoyed.png" alt="" />
+          <img src="/assets/sebby-bright-v1.png" alt="" />
         </section>
 
         <section className="breathe-player">
@@ -2347,7 +2320,7 @@ function MoneySpace({ state, update, close }: SpaceProps) {
 
 function MovementSpace({ state, update, close }: SpaceProps) {
   const [mode, setMode] =
-    useState<"landing" | "strength" | "run" | "dance">("landing")
+    useState<"landing" | "strength" | "run" | "walk">("landing")
   if (mode === "strength") {
     return (
       <StrengthPlayer
@@ -2367,9 +2340,9 @@ function MovementSpace({ state, update, close }: SpaceProps) {
       />
     )
   }
-  if (mode === "dance") {
+  if (mode === "walk") {
     return (
-      <DanceLogger
+      <WalkLogger
         onBack={() => setMode("landing")}
         close={close}
         update={update}
@@ -2385,15 +2358,15 @@ function MovementSpace({ state, update, close }: SpaceProps) {
     >
       <div className="movement-hero">
         <Art
-          src="/assets/movement-path.jpg"
-          fallback="/assets/dance-pavilion.jpg"
-          alt="A dancer moving in a sunlit riverside pavilion"
+          src="/assets/james-walks-seb-v1.jpg"
+          fallback="/assets/movement-path.jpg"
+          alt="James and Seb enjoying a walk beside the river"
         />
         <div>
           <p className="eyebrow eyebrow--light">
             Move in a way that meets you here
           </p>
-          <h3>Strength, air, rhythm, or rest.</h3>
+          <h3>A walk with Seb, fresh air, or rest.</h3>
           <p>Choose what would support the day. Nothing is owed.</p>
         </div>
       </div>
@@ -2420,10 +2393,10 @@ function MovementSpace({ state, update, close }: SpaceProps) {
           <small>Foreground intervals · no GPS</small>
           <ChevronRight size={18} />
         </button>
-        <button type="button" onClick={() => setMode("dance")}>
-          <Music2 size={24} />
-          <strong>Dance</strong>
-          <small>Log a class or flexible practice</small>
+        <button type="button" onClick={() => setMode("walk")}>
+          <Footprints size={24} />
+          <strong>Walk with Seb</strong>
+          <small>Log a stroll or a longer walk together</small>
           <ChevronRight size={18} />
         </button>
         <button
@@ -2783,7 +2756,7 @@ function RunPlayer({
   )
 }
 
-function DanceLogger({
+function WalkLogger({
   onBack,
   close,
   update,
@@ -2794,8 +2767,8 @@ function DanceLogger({
 }) {
   return (
     <Modal
-      title="Log dance"
-      eyebrow="Class or flexible practice"
+      title="Walk with Seb"
+      eyebrow="Fresh air, at your own pace"
       onClose={close}
     >
       <button type="button" className="back-link" onClick={onBack}>
@@ -2813,52 +2786,61 @@ function DanceLogger({
                 ...current.plan,
                 {
                   id: uid(),
-                  title: `${data.get("style") || "Dance"} practice`,
+                  title: String(data.get("route") || "Walk with Seb"),
+                  kind: "walk",
+                  intensity: "light",
                   area: "move",
                   date: today(),
                   mode: "flexible",
                   status: "complete",
-                  duration: Number(data.get("duration") || 45),
+                  duration: Number(data.get("duration") || 20),
                   note: String(data.get("focus") || ""),
+                  log: {
+                    completedAt: new Date().toISOString(),
+                    summary: String(data.get("route") || "Walk with Seb"),
+                    duration: Number(data.get("duration") || 20),
+                    effort: data.get("effort") === "hard" ? "hard" : data.get("effort") === "comfortable" ? "comfortable" : "easy",
+                    note: String(data.get("focus") || ""),
+                  },
                 },
               ],
             }),
-            "Dance saved as meaningful movement.",
+            "Walk with Seb saved.",
           )
           onBack()
         }}
       >
         <label>
-          <span>Style or class</span>
+          <span>Route or place</span>
           <input
-            name="style"
-            placeholder="Contemporary, house, open practice…"
+            name="route"
+            placeholder="Walk with Seb, the park, a new trail…"
           />
         </label>
         <div className="form-row">
           <label>
             <span>Actual minutes</span>
-            <input name="duration" type="number" defaultValue="45" />
+            <input name="duration" type="number" min="1" max="1440" required defaultValue="20" />
           </label>
           <label>
             <span>How did it feel?</span>
             <select name="effort">
-              <option>Light and playful</option>
-              <option>About right</option>
-              <option>More demanding</option>
+              <option value="easy">Easy and relaxed</option>
+              <option value="comfortable">Comfortable</option>
+              <option value="hard">More demanding</option>
             </select>
           </label>
         </div>
         <label>
-          <span>What did you work on?</span>
+          <span>Anything to remember?</span>
           <textarea
             name="focus"
             rows={4}
-            placeholder="A phrase, quality, or moment to remember…"
+            placeholder="A favourite route, something Seb spotted, how the walk felt…"
           />
         </label>
-        <Button type="submit" icon={Music2}>
-          Save dance
+        <Button type="submit" icon={Footprints}>
+          Save walk
         </Button>
       </form>
     </Modal>
@@ -2904,7 +2886,7 @@ function PreferencesSpace({
               event.preventDefault()
               if (!name.trim()) return
               update(
-                (current) => ({ ...current, name: name.trim() }),
+                (current) => ({ ...current, name: properName(name) }),
                 "Your studio feels a little more yours.",
               )
             }}
@@ -2913,6 +2895,8 @@ function PreferencesSpace({
               value={name}
               onChange={(event) => setName(event.target.value)}
               aria-label="Your name"
+              autoCapitalize="words"
+              autoComplete="given-name"
             />
             <Button type="submit" variant="secondary">
               Save
@@ -2953,6 +2937,34 @@ function PreferencesSpace({
             <p>Gentle, few, and skipped when there’s no need.</p>
           </div>
           <NotificationSettings state={state} update={update} />
+        </section>
+        <section>
+          <div>
+            <h3>Sounds</h3>
+            <p>A soft chime when you finish something, and a gentle hush for Lights out. Nothing for ordinary taps.</p>
+          </div>
+          <div className="segmented">
+            {(
+              [
+                [true, "On"],
+                [false, "Off"],
+              ] as const
+            ).map(([value, label]) => (
+              <button
+                type="button"
+                className={(state.sounds !== false) === value ? "is-active" : ""}
+                aria-pressed={(state.sounds !== false) === value}
+                onClick={() => {
+                  setSoundsOn(value)
+                  if (value) play("done")
+                  update((current) => ({ ...current, sounds: value }))
+                }}
+                key={label}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </section>
         <section>
           <div>
@@ -3017,7 +3029,7 @@ function PreferencesSpace({
             </p>
           </div>
           <div className="settings-companion">
-            <img src="/assets/samoyed.png" alt="" />
+            <img src="/assets/sebby-bright-v1.png" alt="" />
           </div>
         </section>
         <details className="backup-settings">
@@ -3232,7 +3244,6 @@ function AddPlanModal({
             <option value="gym">Gym / strength</option>
             <option value="walk">Walk</option>
             <option value="run">Run</option>
-            <option value="dance">Dance</option>
           </select>
         </label>
         {draft.kind && ["gym", "run", "walk", "dance"].includes(draft.kind) && (
@@ -3809,7 +3820,7 @@ function VoiceCapture({
           <>
             <div className="assistant-welcome">
               <span className="assistant-welcome__pet">
-                <img src="/assets/samoyed.png" alt="" />
+                <img src="/assets/sebby-bright-v1.png" alt="" />
               </span>
               <div>
                 <h3>Your Studio companion is here.</h3>
@@ -4278,6 +4289,7 @@ export default function App() {
     } else if (action === "studio") setCapture(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  useEffect(() => setSoundsOn(state.sounds !== false), [state.sounds])
   // Dark mode: evenings by default (7pm-6am), or the user's choice. Rechecked every minute.
   useEffect(() => {
     const media = window.matchMedia?.("(prefers-color-scheme: dark)")
@@ -4373,7 +4385,7 @@ export default function App() {
     return (
       <main className="setup-page">
         <header className="setup-page__head">
-          <img src="/assets/life-studio-room.jpg" alt="" />
+          <LogoMark />
           <div>
             <p className="eyebrow">Life Studio</p>
             <h1>Let’s set up your space</h1>
@@ -4421,7 +4433,8 @@ export default function App() {
           <span>Studio assistant</span>
         </button>
         <div className="rail-footer">
-          <span>{state.name ? `${state.name}’s Life Studio` : "Life Studio"}</span>
+          <img className="rail-seb" src="/assets/sebby-bright-v1.png" alt="Seb" />
+          <span>{state.name ? `${properName(state.name)}’s Life Studio` : "Life Studio"}</span>
           <small>One life, shaped gently</small>
         </div>
       </aside>
@@ -4501,7 +4514,14 @@ export default function App() {
         <div className="toast" role="status">
           <Trash2 size={17} />
           {undo.message}
-          <button type="button" className="toast__undo" onClick={undo.run}>
+          <button
+            type="button"
+            className="toast__undo"
+            onClick={() => {
+              play("undo")
+              undo.run()
+            }}
+          >
             Undo
           </button>
         </div>

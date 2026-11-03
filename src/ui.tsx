@@ -10,6 +10,7 @@ export const useRemove = () => useContext(RemoveContext)
 
 export const today = () => localDate()
 export const uid = () => crypto.randomUUID()
+export { capitaliseName as properName } from "./names"
 export const formatDate = (
   value: string,
   options?: Intl.DateTimeFormatOptions,

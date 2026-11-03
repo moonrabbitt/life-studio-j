@@ -14,7 +14,7 @@ export const areaMeta: Record<Area, {
   create: {
     label: "Create",
     short: "Make something",
-    description: "Ideas, writing, photography, music, and film.",
+    description: "LEGO builds, reading, gaming, and ideas for a solo trip to Asia.",
   },
   connect: {
     label: "Connect",
@@ -24,7 +24,7 @@ export const areaMeta: Record<Area, {
   move: {
     label: "Move",
     short: "Move your way",
-    description: "Walk, run, dance, strength, mobility, or rest.",
+    description: "Walks with Seb, time outdoors, strength, mobility, or rest.",
   },
   money: {
     label: "Money",

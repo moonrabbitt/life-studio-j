@@ -1,33 +1,33 @@
 {
-  "name": "Life Studio",
-  "short_name": "Life Studio",
-  "description": "A private, local place to shape the life you are building.",
+  "name": "James’s Life Studio",
+  "short_name": "James Studio",
+  "description": "Walks with Seb, books, LEGO, gaming, and room for a solo adventure in Asia.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#f6f0e4",
-  "theme_color": "#34543f",
+  "theme_color": "#A9563E",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/sebby-icon-192-v1.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/sebby-icon-512-v1.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-maskable-512.png",
+      "src": "/sebby-maskable-512-v1.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/life-studio-icon.svg",
+      "src": "/sebby-logo-v1.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

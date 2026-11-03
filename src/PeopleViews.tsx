@@ -200,7 +200,7 @@ function PersonForm({
     >
       <label>
         <span>Name</span>
-        <input value={name} onChange={(event) => setName(event.target.value)} required autoFocus={!person} />
+        <input value={name} autoCapitalize="words" autoComplete="name" onChange={(event) => setName(event.target.value)} required autoFocus={!person} />
       </label>
       <label>
         <span>What to remember (optional)</span>
@@ -475,7 +475,7 @@ export function PeopleSpace({
   } else {
     body = (
       <>
-        <Art className="space-banner" src="/assets/friends-cafe.jpg" />
+        <Art className="space-banner" src="/assets/james-cafe-seb-v1.jpg" />
         <div className="feature-topline">
           <p>
             <strong>Connection without obligation.</strong> Notes on the people you care about,

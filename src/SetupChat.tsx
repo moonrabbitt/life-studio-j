@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { onboardingTurn, setupSpace, type SetupDraft } from "./ai"
 import type { SetupChoices } from "./setup"
 import { getPasscode, setPasscode } from "./sync"
+import { capitaliseName } from "./names"
 import type { AboutMe, AppState } from "./types"
 import { Button, formatDate } from "./ui"
 
@@ -27,7 +28,7 @@ const TOPICS: Topic[] = [
   {
     key: "workingTowards",
     question: "Is there anything you’re working towards? An event, a date, something you’d love to be able to do.",
-    chips: ["A race or event", "Getting stronger", "A dance goal", "A creative project", "Nothing specific yet"],
+    chips: ["A solo trip to Asia", "Walks with Seb", "Read more", "A LEGO build", "Nothing specific yet"],
     multi: true,
   },
   {
@@ -45,7 +46,7 @@ const TOPICS: Topic[] = [
   {
     key: "movementNow",
     question: "How do you move at the moment, and what can you use? A gym, weights at home, classes…",
-    chips: ["Hardly at all", "Some walking", "Gym membership", "Dumbbells at home", "Dance classes", "I run a little"],
+    chips: ["Walks with Seb", "Weekend walks", "Gym membership", "Dumbbells at home", "Getting ready for travel", "I run a little"],
     multi: true,
   },
   {
@@ -204,7 +205,7 @@ export function SetupChat({
     setPicked([])
     setChips([])
     setAnswers((previous) => ({ ...previous, [current.key]: [...(previous[current.key] ?? []), text] }))
-    const finalName = current.key === "name" && text !== "Skip" ? text.split(/[ ,.]/)[0] : name
+    const finalName = current.key === "name" && text !== "Skip" ? capitaliseName(text.split(/[ ,.]/)[0]) : name
     if (current.key === "name") setName(finalName)
 
     let reply = text === "Skip" ? "That’s fine." : "Thank you."

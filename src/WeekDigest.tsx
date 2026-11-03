@@ -7,17 +7,16 @@ import { Art, Button, today } from "./ui"
 
 // A different illustration each week, so the card feels fresh.
 const WEEK_ART = [
-  "/assets/life-studio-room.jpg",
+  "/assets/james-reading-v1.jpg",
   "/assets/movement-path.jpg",
   "/assets/writing-nook.jpg",
-  "/assets/creative-room.jpg",
-  "/assets/dance-pavilion.jpg",
-  "/assets/friends-cafe.jpg",
+  "/assets/james-walks-seb-v1.jpg",
+  "/assets/james-cafe-seb-v1.jpg",
   "/assets/money-growth.jpg",
-  "/assets/making-music.jpg",
-  "/assets/film-director.jpg",
-  "/assets/dance-floor.jpg",
-  "/assets/creative-tech.jpg",
+  "/assets/james-lego-v2.jpg",
+  "/assets/james-movie-night-v2.jpg",
+  "/assets/james-solo-travel-v2.jpg",
+  "/assets/james-gaming-v2.jpg",
 ]
 const artForWeek = (weekStart: string) => {
   const weekNumber = Math.floor(new Date(`${weekStart}T12:00:00`).getTime() / (7 * 86400000))
@@ -66,7 +65,7 @@ export function WeekDigestCard({ state, update }: { state: AppState; update: Upd
   return (
     <section className="week-card">
       <div className="week-card__art">
-        <Art src={artForWeek(weekStart)} fallback="/assets/life-studio-room.jpg" />
+        <Art src={artForWeek(weekStart)} fallback="/assets/james-reading-v1.jpg" />
         <div className="week-card__veil" />
         <div className="week-card__over">
           <p className="eyebrow eyebrow--light">This week</p>

@@ -36,7 +36,7 @@ export const HAPPY_IDEAS: { text: string; link?: { label: string; url: string } 
   { text: "Learn one weird fact about cows: they have best friends and get stressed when apart." },
   { text: "Draw a terrible little animal on a sticky note and put it somewhere you’ll see later." },
   { text: "Find the fluffiest cloud and decide which animal it is." },
-  { text: "Put on a song you loved at fifteen and dance like no one’s watching (no one is)." },
+  { text: "Take Seb on a short walk and notice somewhere you would like to explore together." },
   { text: "Step outside for two minutes and find one thing that’s quietly beautiful." },
   { text: "Smell something lovely: fresh bread, coffee, a flower, clean laundry." },
   { text: "Look back at an old photo that makes you smile." },

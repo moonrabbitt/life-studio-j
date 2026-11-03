@@ -285,7 +285,7 @@ export function StudioChat({
           {chat.length === 0 && (
             <div className="assistant-welcome">
               <span className="assistant-welcome__pet">
-                <img src="/assets/samoyed.png" alt="" />
+                <img src="/assets/sebby-bright-v1.png" alt="" />
               </span>
               <div>
                 <h3>Hi {state.name}, what’s on your mind?</h3>
