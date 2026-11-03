@@ -9,25 +9,25 @@
   "theme_color": "#A9563E",
   "icons": [
     {
-      "src": "/sebby-icon-192-v1.png",
+      "src": "/sebby-orange-192-v1.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/sebby-icon-512-v1.png",
+      "src": "/sebby-orange-512-v1.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/sebby-maskable-512-v1.png",
+      "src": "/sebby-orange-maskable-v1.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/sebby-logo-v1.svg",
+      "src": "/sebby-orange-logo-v1.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

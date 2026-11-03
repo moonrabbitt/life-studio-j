@@ -1,5 +1,5 @@
-const CACHE = "james-seb-shell-v9"
-const SHELL = ["/", "/manifest.webmanifest", "/sebby-logo-v1.svg"]
+const CACHE = "james-seb-orange-shell-v13"
+const SHELL = ["/", "/manifest.webmanifest", "/sebby-orange-logo-v1.svg"]
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)))
@@ -66,8 +66,8 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title || "Life Studio", {
       body: data.body || "",
-      icon: "/sebby-icon-192-v1.png",
-      badge: "/sebby-icon-192-v1.png",
+      icon: "/sebby-orange-192-v1.png",
+      badge: "/sebby-orange-192-v1.png",
       tag: data.tag || "life-studio",
       data: { url: data.url || "/" },
     }),

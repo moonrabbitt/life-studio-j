@@ -188,7 +188,7 @@ function AreaMark({ area, compact = false }: { area: Area; compact?: boolean }) 
 }
 
 function LogoMark() {
-  return <img className="brand-mark" src="/sebby-icon-192-v1.png" alt="" aria-hidden="true" />
+  return <img className="brand-mark" src="/sebby-orange-logo-v1.svg" alt="" aria-hidden="true" />
 }
 
 function EmptyState({
