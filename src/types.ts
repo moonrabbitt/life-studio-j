@@ -447,6 +447,7 @@ export type AppState = {
   // Snapshots kept when you set up again from the top.
   archives?: SpaceArchive[]
   tourDone?: boolean
+  guideSeen?: boolean
   // Gentle notifications: what's on, when, and how many a day at most.
   notifications?: NotificationPrefs
   // Dark mode: in the evening (default), always light, always dark, or follow the phone.

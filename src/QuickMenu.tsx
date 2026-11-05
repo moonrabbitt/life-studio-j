@@ -1,5 +1,6 @@
 import {
   AudioLines,
+  BookOpen,
   CalendarPlus,
   Check,
   CloudOff,
@@ -52,6 +53,7 @@ export function QuickMenu({
   onJourney,
   onStartNext,
   onSleep,
+  onGuide,
 }: {
   state: AppState
   sync: Sync
@@ -64,6 +66,7 @@ export function QuickMenu({
   onJourney: () => void
   onStartNext: (id: string) => void
   onSleep: () => void
+  onGuide: () => void
 }) {
   const asleep = openSleep(state)
   const next = nextUsefulAction(state.plan, today())
@@ -84,6 +87,7 @@ export function QuickMenu({
     { label: "Plan with a friend", hint: "Message, coffee, walk", icon: Users, onClick: go(() => onSpace("connect")) },
     { label: "Voice note", hint: "Private recording", icon: AudioLines, onClick: go(onVoiceNotes) },
     { label: "Your journey", hint: "Roadmap and story", icon: Map, onClick: go(onJourney) },
+    { label: "How it all works", hint: "The full guide", icon: BookOpen, onClick: go(onGuide) },
   ]
   return (
     <Modal title="Quick menu" eyebrow="Jump straight in" onClose={onClose}>

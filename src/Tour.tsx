@@ -25,12 +25,12 @@ const STEPS = [
   {
     art: "/assets/james-cafe-seb-v1.jpg",
     title: "My space",
-    body: "Movement, projects, people, money and home, plus About me (what Studio knows about you) and Settings. The ☰ menu has quick ways in.",
+    body: "Movement, projects, people, money and home, plus About me (what Studio knows about you) and Settings. The ☰ menu has quick ways in, and the full guide to everything if you ever get stuck.",
   },
 ]
 
 // A short first look around after setup. You can take it again from About me.
-export function Tour({ onDone }: { onDone: () => void }) {
+export function Tour({ onDone, onGuide }: { onDone: () => void; onGuide: () => void }) {
   const [index, setIndex] = useState(0)
   const step = STEPS[index]
   const last = index === STEPS.length - 1
@@ -58,6 +58,11 @@ export function Tour({ onDone }: { onDone: () => void }) {
             {index > 0 && (
               <Button variant="ghost" onClick={() => setIndex(index - 1)}>
                 Back
+              </Button>
+            )}
+            {last && (
+              <Button variant="secondary" onClick={onGuide}>
+                Read the full guide
               </Button>
             )}
             <Button onClick={() => (last ? onDone() : setIndex(index + 1))}>{last ? "Start" : "Next"}</Button>

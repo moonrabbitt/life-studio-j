@@ -121,11 +121,12 @@ import { StudioChat } from "./StudioChat"
 import { AboutMeSpace } from "./AboutMe"
 import { SetupChat } from "./SetupChat"
 import { applySetup } from "./setup"
+import { Guide, type GuideTarget } from "./Guide"
 import { Tour } from "./Tour"
 import { NotificationSettings } from "./NotificationSettings"
 import { markSeen } from "./notifications"
 import { AboutMeNudge, useWeeklyAboutMe } from "./AboutMeUpdates"
-import { openSleep, SleepSpace, SleepToggle } from "./SleepViews"
+import { nearBedtime, openSleep, SleepSpace, SleepToggle } from "./SleepViews"
 import { HappinessCard, HappinessJar } from "./HappinessViews"
 import { NextWeekPlanner, nextWeekDue } from "./NextWeek"
 import { SessionPlanner, type PlannedSession } from "./SessionPlanner"
@@ -217,6 +218,19 @@ function EmptyState({
 }
 
 // Morning (4-12), day (12-17), evening (17-21), night (21-4).
+// Same breakpoint as the phone layout in index.css.
+function useIsPhone() {
+  const [isPhone, setIsPhone] = useState(() => window.matchMedia("(max-width: 699px)").matches)
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 699px)")
+    const onChange = () => setIsPhone(media.matches)
+    onChange()
+    media.addEventListener("change", onChange)
+    return () => media.removeEventListener("change", onChange)
+  }, [])
+  return isPhone
+}
+
 const partOfDay = () => {
   const hour = new Date().getHours()
   return hour >= 4 && hour < 12 ? "morning" : hour < 17 && hour >= 12 ? "day" : hour >= 17 && hour < 21 ? "evening" : "night"
@@ -265,6 +279,7 @@ function TodayView({
   onOpenSpace,
   onActivity,
   onRoadmap,
+  onOpenGuide,
   onSetupRestart,
   onOpenItem,
 }: {
@@ -274,6 +289,7 @@ function TodayView({
   onOpenSpace: (space: SpaceKey) => void
   onActivity: (id: string, mode: ActivityMode) => void
   onRoadmap: () => void
+  onOpenGuide: () => void
   onSetupRestart: () => void
   onOpenItem: (id: string) => void
 }) {
@@ -350,13 +366,69 @@ function TodayView({
 
   // Today changes with the time of day: lights on and the day ahead in the morning; the plan in the
   // day; happiness and winding down in the evening; lights out at night. "How much room" always sits
-  // right above the schedule, so you can watch it change.
+  // right above the schedule, so you can watch it change. Phones are different: see phoneOrder below.
+  const isPhone = useIsPhone()
   const part = partOfDay()
   // The big sleep card only when it matters: lights out at night, lights on / "how did you sleep?" in the morning.
   const lastNight = [...(state.sleep ?? [])].filter((entry) => entry.lightsOn).sort((a, b) => b.lightsOut.localeCompare(a.lightsOut))[0]
   const sleepMatters =
     part === "night" ||
     (part === "morning" && (!!openSleep(state) || (!!lastNight && !lastNight.feeling && Date.now() - new Date(lastNight.lightsOn!).getTime() < 12 * 3600000)))
+  // On a phone the check-in and today's shape lead, unless it's nearly bedtime or time for lights on.
+  const [bedtimeSoon, setBedtimeSoon] = useState(() => nearBedtime(state))
+  useEffect(() => {
+    const check = () => setBedtimeSoon(nearBedtime(state))
+    check()
+    const timer = window.setInterval(check, 60000)
+    document.addEventListener("visibilitychange", check)
+    return () => {
+      window.clearInterval(timer)
+      document.removeEventListener("visibilitychange", check)
+    }
+  }, [state])
+  const sleepFirst = bedtimeSoon || !!openSleep(state) || (part === "morning" && sleepMatters)
+  const corner = (
+    <aside className="page-grid__aside">
+      <section className="companion-card">
+        <div>
+          <p className="eyebrow">A quiet corner</p>
+          <h3>A softer day still belongs to your life.</h3>
+          <p>Rest, make tea, write one line, or leave the space open.</p>
+          <div className="companion-card__actions">
+            <button type="button" onClick={() => onOpenSpace("breathe")}>
+              <Wind size={16} /> Breathe for a minute
+            </button>
+            <button type="button" onClick={() => onOpenSpace("reflect")}>
+              <Feather size={16} /> Write one line
+            </button>
+          </div>
+        </div>
+        <img src="/assets/sebby-bright-v1.png" alt="" />
+      </section>
+      <section className="quick-spaces">
+        <div className="section-heading section-heading--small">
+          <h3>Drop into a space</h3>
+        </div>
+        <div className="quick-spaces__grid">
+          {(["reflect", "create", "connect", "money"] as Area[]).map(
+            (area) => {
+              const Icon = areaIcon[area]
+              return (
+                <button
+                  type="button"
+                  onClick={() => onOpenSpace(area)}
+                  key={area}
+                >
+                  <Icon size={19} />
+                  <span>{areaMeta[area].label}</span>
+                </button>
+              )
+            },
+          )}
+        </div>
+      </section>
+    </aside>
+  )
   const blocks: Record<string, ReactNode> = {
     next: (
       <NextActionCard
@@ -537,52 +609,31 @@ function TodayView({
           </section>
         </div>
 
-        <aside className="page-grid__aside">
-          <section className="companion-card">
-            <div>
-              <p className="eyebrow">A quiet corner</p>
-              <h3>A softer day still belongs to your life.</h3>
-              <p>Rest, make tea, write one line, or leave the space open.</p>
-              <div className="companion-card__actions">
-                <button type="button" onClick={() => onOpenSpace("breathe")}>
-                  <Wind size={16} /> Breathe for a minute
-                </button>
-                <button type="button" onClick={() => onOpenSpace("reflect")}>
-                  <Feather size={16} /> Write one line
-                </button>
-              </div>
-            </div>
-            <img src="/assets/sebby-bright-v1.png" alt="" />
-          </section>
-          <section className="quick-spaces">
-            <div className="section-heading section-heading--small">
-              <h3>Drop into a space</h3>
-            </div>
-            <div className="quick-spaces__grid">
-              {(["reflect", "create", "connect", "money"] as Area[]).map(
-                (area) => {
-                  const Icon = areaIcon[area]
-                  return (
-                    <button
-                      type="button"
-                      onClick={() => onOpenSpace(area)}
-                      key={area}
-                    >
-                      <Icon size={19} />
-                      <span>{areaMeta[area].label}</span>
-                    </button>
-                  )
-                },
-              )}
-            </div>
-          </section>
-        </aside>
+        {!isPhone && corner}
       </div>
       </>
     ),
-    sleep: <SleepToggle state={state} update={update} onOpen={() => onOpenSpace("sleep")} featured={sleepMatters} />,
+    sleep: <SleepToggle state={state} update={update} onOpen={() => onOpenSpace("sleep")} featured={isPhone ? sleepFirst : sleepMatters} />,
     happiness: <HappinessCard state={state} update={update} onOpen={() => onOpenSpace("happiness")} />,
     winddown: <WindDown state={state} onReflect={() => onOpenSpace("reflect")} />,
+    corner: <div className="page-grid">{corner}</div>,
+    guide: (
+      <section className="guide-nudge">
+        <div>
+          <p className="eyebrow">Stuck on anything?</p>
+          <h3>A full guide to everything in here</h3>
+          <p>Every feature, explained from the beginning, with search for when you need one answer.</p>
+        </div>
+        <div className="inline-actions">
+          <Button icon={BookOpen} onClick={onOpenGuide}>
+            Open the guide
+          </Button>
+          <Button variant="ghost" onClick={() => update((current) => ({ ...current, guideSeen: true }))}>
+            Not now
+          </Button>
+        </div>
+      </section>
+    ),
   }
   // Something starting soon (within two hours) always comes first, whatever the time of day.
   const soon = (() => {
@@ -598,6 +649,14 @@ function TodayView({
     evening: soon ? ["next", "happiness", "winddown", "schedule", "sleep"] : ["happiness", "winddown", "next", "schedule", "sleep"],
     night: soon ? ["next", "sleep", "happiness", "winddown", "schedule"] : ["sleep", "happiness", "winddown", "schedule"],
   }
+
+  const phoneOrder = [
+    ...(sleepFirst ? ["sleep"] : []),
+    "schedule",
+    ...order[part].filter((key) => key !== "schedule" && key !== "sleep"),
+    ...(sleepFirst ? [] : ["sleep"]),
+    "corner",
+  ]
 
   return (
     <div className={`page today-page is-${part}`}>
@@ -625,7 +684,7 @@ function TodayView({
         </div>
       </section>
 
-      {order[part].map((key) => (
+      {(isPhone ? phoneOrder : order[part]).flatMap((key) => (key === "schedule" && !state.guideSeen ? [key, "guide"] : [key])).map((key) => (
         <Fragment key={key}>{blocks[key]}</Fragment>
       ))}
     </div>
@@ -1327,9 +1386,11 @@ const spaceCards: {
 function MySpaceView({
   state,
   openSpace,
+  onOpenGuide,
 }: {
   state: AppState
   openSpace: (key: SpaceKey) => void
+  onOpenGuide: () => void
 }) {
   return (
     <div className="page space-page">
@@ -1374,6 +1435,16 @@ function MySpaceView({
         <span>
           <strong>Sleep</strong>
           <small>Lights out and lights on, so you can see your patterns.</small>
+        </span>
+        <ChevronRight size={20} />
+      </button>
+      <button type="button" className="about-card" onClick={onOpenGuide}>
+        <span className="about-card__icon">
+          <BookOpen size={21} />
+        </span>
+        <span>
+          <strong>How everything works</strong>
+          <small>The full guide to every feature, with search.</small>
         </span>
         <ChevronRight size={20} />
       </button>
@@ -4257,6 +4328,7 @@ export default function App() {
   const [restartSetup, setRestartSetup] = useState(false)
   const [editProfile, setEditProfile] = useState(false)
   const [setupAgain, setSetupAgain] = useState(false)
+  const [guide, setGuide] = useState(false)
   // Tell the notification job "I'm in the app", so nothing pings while you're using it.
   useEffect(() => {
     markSeen()
@@ -4341,6 +4413,19 @@ export default function App() {
     }
   }, [])
 
+  const openGuide = () => {
+    setGuide(true)
+    update((current) => (current.guideSeen ? current : { ...current, guideSeen: true }))
+  }
+  const goFromGuide = (target: GuideTarget) => {
+    setGuide(false)
+    if ("route" in target) navigate(target.route)
+    else if ("space" in target) setSpace(target.space)
+    else {
+      setChatHint("")
+      setCapture(true)
+    }
+  }
   const navigate = (next: Route) => {
     setRoute(next)
     window.history.pushState({}, "", routePath[next])
@@ -4459,6 +4544,7 @@ export default function App() {
         {route === "today" && (
           <TodayView
             state={state}
+            onOpenGuide={openGuide}
             update={update}
             onAdd={() => setAddDate(today())}
             onOpenSpace={(key) => setSpace(key)}
@@ -4480,7 +4566,7 @@ export default function App() {
         )}
         {route === "progress" && <ProgressView state={state} update={update} onJourney={() => setRoadmap(true)} />}
         {route === "space" && (
-          <MySpaceView state={state} openSpace={(key) => setSpace(key)} />
+          <MySpaceView state={state} openSpace={(key) => setSpace(key)} onOpenGuide={openGuide} />
         )}
       </main>
 
@@ -4574,6 +4660,7 @@ export default function App() {
           onAdd={() => setAddDate(today())}
           onSpace={(key) => setSpace(key)}
           onVoiceNotes={() => setVoiceNotes(true)}
+          onGuide={openGuide}
           onJourney={() => navigate("progress")}
           onStartNext={(id) => openActivity(id, "start")}
           onSleep={() => {
@@ -4744,13 +4831,20 @@ export default function App() {
           }}
         />
       )}
+      {guide && <Guide onClose={() => setGuide(false)} onGo={goFromGuide} />}
       {setupAgain && (
         <Modal title="Set up from the top" eyebrow="A conversation with Studio" onClose={() => setSetupAgain(false)} wide>
           <SetupChat state={state} again onApply={finishConversation} />
         </Modal>
       )}
       {state.tourDone === false && !setupAgain && (
-        <Tour onDone={() => update((current) => ({ ...current, tourDone: true }))} />
+        <Tour
+          onDone={() => update((current) => ({ ...current, tourDone: true }))}
+          onGuide={() => {
+            update((current) => ({ ...current, tourDone: true }))
+            openGuide()
+          }}
+        />
       )}
       {space === "move" && (
         <MovementSpace
