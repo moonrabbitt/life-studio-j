@@ -1,3 +1,5 @@
+import { describe, forecastFor, heroLine, useWeather } from "./weather"
+import { Welcome, welcomeDone } from "./Welcome"
 import { play, setSoundsOn } from "./sounds"
 import {
   ArrowLeft,
@@ -96,6 +98,7 @@ import {
 } from "./TrainingViews"
 import {
   Celebration,
+  celebrate,
   celebrateDone,
   GoalDetail,
   GOAL_VS_PROJECT,
@@ -369,11 +372,12 @@ function TodayView({
   // right above the schedule, so you can watch it change. Phones are different: see phoneOrder below.
   const isPhone = useIsPhone()
   const part = partOfDay()
-  // The big sleep card only when it matters: lights out at night, lights on / "how did you sleep?" in the morning.
+  // The big sleep card only when it matters: lights out at night, lights on / "how did you sleep?" for an hour after.
+  // Once you're up, sleep steps aside to the bottom (you can still rate it there).
   const lastNight = [...(state.sleep ?? [])].filter((entry) => entry.lightsOn).sort((a, b) => b.lightsOut.localeCompare(a.lightsOut))[0]
   const sleepMatters =
     part === "night" ||
-    (part === "morning" && (!!openSleep(state) || (!!lastNight && !lastNight.feeling && Date.now() - new Date(lastNight.lightsOn!).getTime() < 12 * 3600000)))
+    (part === "morning" && (!!openSleep(state) || (!!lastNight && !lastNight.feeling && Date.now() - new Date(lastNight.lightsOn!).getTime() < 3600000)))
   // On a phone the check-in and today's shape lead, unless it's nearly bedtime or time for lights on.
   const [bedtimeSoon, setBedtimeSoon] = useState(() => nearBedtime(state))
   useEffect(() => {
@@ -386,6 +390,9 @@ function TodayView({
       document.removeEventListener("visibilitychange", check)
     }
   }, [state])
+  const weather = useWeather()
+  // In the evening and at night, "next up on Friday" is noise; only show what's still on today.
+  const showNext = (part !== "evening" && part !== "night") || upNext?.when === "today"
   const sleepFirst = bedtimeSoon || !!openSleep(state) || (part === "morning" && sleepMatters)
   const corner = (
     <aside className="page-grid__aside">
@@ -430,47 +437,15 @@ function TodayView({
     </aside>
   )
   const blocks: Record<string, ReactNode> = {
-    next: (
-      <NextActionCard
-        state={state}
-        update={update}
-        onActivity={onActivity}
-        onRoadmap={onRoadmap}
-        onSetupRestart={onSetupRestart}
-        onOpenItem={onOpenItem}
-      />
-    ),
+    // The next useful action sits in the hero; how much room there is sits with the day it shapes.
     schedule: (
       <>
-      <section className="check-in today-check-in">
-        <div>
-          <p className="eyebrow">A small check-in</p>
-          <h2>How much room is there today?</h2>
-        </div>
-        <div className="segmented" aria-label="Energy check-in">
-          {[
-            ["low", "Keep it small"],
-            ["steady", "Steady"],
-            ["open", "Room to explore"],
-          ].map(([value, label]) => (
-            <button
-              type="button"
-              className={state.checkIn === value ? "is-active" : ""}
-              aria-pressed={state.checkIn === value}
-              onClick={() => setCheckIn(value as CheckIn)}
-              key={value}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </section>
       <div className="page-grid">
         <div className="page-grid__main">
           <section className="section-block">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">Today’s shape</p>
+                <p className="eyebrow">Today</p>
                 <h2>
                   {visibleItems.length
                     ? "A few things, with space between"
@@ -480,6 +455,26 @@ function TodayView({
               <Button variant="ghost" icon={Plus} onClick={onAdd}>
                 Add
               </Button>
+            </div>
+            <div className="today-room">
+              <span>How much room today?</span>
+              <div className="segmented" aria-label="How much room today">
+                {[
+                  ["low", "Keep it small"],
+                  ["steady", "Steady"],
+                  ["open", "Room to explore"],
+                ].map(([value, label]) => (
+                  <button
+                    type="button"
+                    className={state.checkIn === value ? "is-active" : ""}
+                    aria-pressed={state.checkIn === value}
+                    onClick={() => setCheckIn(value as CheckIn)}
+                    key={value}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
             {tucked.length > 0 && (
               <button type="button" className="energy-note" onClick={() => setShowTucked(!showTucked)}>
@@ -635,7 +630,7 @@ function TodayView({
       </section>
     ),
   }
-  // Something starting soon (within two hours) always comes first, whatever the time of day.
+  // In the evening, something starting soon (within two hours) brings the schedule up first.
   const soon = (() => {
     if (!upNext || upNext.when !== "today" || !upNext.item.time) return false
     const [h, m] = upNext.item.time.split(":").map(Number)
@@ -644,10 +639,10 @@ function TodayView({
     return diff >= -30 && diff <= 120
   })()
   const order: Record<ReturnType<typeof partOfDay>, string[]> = {
-    morning: sleepMatters ? ["sleep", "next", "schedule", "happiness"] : ["next", "schedule", "happiness", "sleep"],
-    day: ["next", "schedule", "happiness", "sleep"],
-    evening: soon ? ["next", "happiness", "winddown", "schedule", "sleep"] : ["happiness", "winddown", "next", "schedule", "sleep"],
-    night: soon ? ["next", "sleep", "happiness", "winddown", "schedule"] : ["sleep", "happiness", "winddown", "schedule"],
+    morning: sleepMatters ? ["sleep", "schedule", "happiness"] : ["schedule", "happiness", "sleep"],
+    day: ["schedule", "happiness", "sleep"],
+    evening: soon ? ["schedule", "happiness", "winddown", "sleep"] : ["happiness", "winddown", "schedule", "sleep"],
+    night: ["sleep", "happiness", "winddown", "schedule"],
   }
 
   const phoneOrder = [
@@ -676,12 +671,30 @@ function TodayView({
               day: "numeric",
               month: "long",
             })}
+            {weather && (
+              <span className="today-hero__weather" title={`${weather.place ? `${weather.place}: ` : ""}${describe(weather.now.code, weather.now.isDay).word}, high ${weather.high}°, low ${weather.low}°`}>
+                {" · "}
+                {describe(weather.now.code, weather.now.isDay).icon} {weather.now.temp}°
+              </span>
+            )}
           </p>
           <h1>
             {greeting}{state.name ? `, ${properName(state.name)}` : ""}.
           </h1>
-          <p>What would make today feel a little more like yours?</p>
+          <p className="today-hero__line">{heroLine(state, weather)}</p>
         </div>
+        {showNext && (
+          <div className="today-hero__next">
+            <NextActionCard
+              state={state}
+              update={update}
+              onActivity={onActivity}
+              onRoadmap={onRoadmap}
+              onSetupRestart={onSetupRestart}
+              onOpenItem={onOpenItem}
+            />
+          </div>
+        )}
       </section>
 
       {(isPhone ? phoneOrder : order[part]).flatMap((key) => (key === "schedule" && !state.guideSeen ? [key, "guide"] : [key])).map((key) => (
@@ -707,6 +720,8 @@ function PlanView({
   onOpenItem: (id: string) => void
 }) {
   const remove = useRemove()
+  // Each day on the strip shows its weather at a glance; details belong in a weather app.
+  const weather = useWeather()
   const days = useMemo(
     () =>
       Array.from({ length: 14 }, (_, index) => {
@@ -779,13 +794,22 @@ function PlanView({
           >
             <span>{formatDate(date, { weekday: "short" })}</span>
             <strong>{formatDate(date, { day: "numeric" })}</strong>
-            <small>
-              {state.plan.filter(
-                (item) =>
-                  item.date === date &&
-                  (item.status === "planned" || item.status === "proposed"),
-              ).length || "—"}
-            </small>
+            {forecastFor(weather, date) && (
+              <i className="day-strip__weather" aria-label={`${describe(forecastFor(weather, date)!.code).word}, ${forecastFor(weather, date)!.high}°`}>
+                {describe(forecastFor(weather, date)!.code).icon} {forecastFor(weather, date)!.high}°
+              </i>
+            )}
+            {(() => {
+              const count = state.plan.filter((item) => item.date === date && (item.status === "planned" || item.status === "proposed")).length
+              // A dot per plan (up to three), so the day reads at a glance without another number.
+              return (
+                <small className="day-strip__dots" aria-label={count ? `${count} planned` : "Nothing planned"}>
+                  {Array.from({ length: Math.min(count, 3) }, (_, index) => (
+                    <i key={index} />
+                  ))}
+                </small>
+              )
+            })()}
           </button>
         ))}
       </nav>
@@ -1525,10 +1549,13 @@ function MySpaceView({
 
 function JournalSpace({ state, update, close }: SpaceProps) {
   const [editing, setEditing] = useState<JournalEntry | null>(null)
+  // Bumped after each save so the page starts blank again.
+  const [fresh, setFresh] = useState(0)
   const remove = useRemove()
   const save = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const form = new FormData(event.currentTarget)
+    if (!String(form.get("body") || "").trim() && !String(form.get("title") || "").trim()) return
     const entry: JournalEntry = {
       id: editing?.id ?? uid(),
       title: String(form.get("title") || "Untitled entry"),
@@ -1545,9 +1572,17 @@ function JournalSpace({ state, update, close }: SpaceProps) {
             )
           : [entry, ...current.journal],
       }),
-      "Journal entry saved on this device.",
+      editing ? "Entry updated." : undefined,
     )
+    if (!editing) {
+      const words = entry.body.trim().split(/\s+/).filter(Boolean).length
+      celebrate({
+        title: "You wrote something",
+        body: words > 1 ? `${words} words, kept safe in your journal.` : "Kept safe in your journal. Every page counts.",
+      })
+    }
     setEditing(null)
+    setFresh((value) => value + 1)
   }
 
   return (
@@ -1555,7 +1590,7 @@ function JournalSpace({ state, update, close }: SpaceProps) {
       <Art className="space-banner" src="/assets/writing-nook.jpg" />
       <div className="feature-layout">
         <div className="feature-main">
-          <form className="writing-form" onSubmit={save}>
+          <form className="writing-form" onSubmit={save} key={editing?.id ?? `new-${fresh}`}>
             <label>
               <span>Title</span>
               <input
@@ -4288,6 +4323,7 @@ function VoiceCapture({
 
 export default function App() {
   const { state, update, removeWithUndo, undo, notice, setNotice, reset, sync } = useLifeStudioState()
+  const [welcomed, setWelcomed] = useState(welcomeDone)
   const [quickMenu, setQuickMenu] = useState(false)
   const [chatHint, setChatHint] = useState("")
   const manualSync = async () => {
@@ -4466,14 +4502,25 @@ export default function App() {
     navigate("today")
   }
 
+  if (!state.onboarded && !welcomed)
+    return (
+      <Welcome
+        onDone={(hasPasscode) => {
+          setWelcomed(true)
+          // With a passcode, a space already set up elsewhere (e.g. in the browser before the Home Screen) comes across.
+          if (hasPasscode) sync.connect(getPasscode(), "load")
+        }}
+      />
+    )
+
   if (!state.onboarded) {
     return (
       <main className="setup-page">
         <header className="setup-page__head">
           <LogoMark />
           <div>
-            <p className="eyebrow">Life Studio</p>
-            <h1>Let’s set up your space</h1>
+            <p className="eyebrow">{welcomed ? "Last step" : "Life Studio"}</p>
+            <h1>{welcomed ? "Tell Studio a little about you" : "Let’s set up your space"}</h1>
           </div>
         </header>
         <SetupChat state={state} again={false} onApply={finishConversation} />

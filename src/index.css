@@ -2036,6 +2036,42 @@ textarea {
   font-weight: 400;
 }
 
+/* Keep every field inside its box on phones. iPhone Safari gives date and time fields a wide minimum
+   width that ignores width: 100%, and zooms the page in on any field with text under 16px. */
+input,
+select,
+textarea {
+  min-width: 0;
+  max-width: 100%;
+}
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"] {
+  display: block;
+  -webkit-appearance: none;
+  appearance: none;
+  text-align: left;
+}
+input::-webkit-date-and-time-value {
+  min-height: 1.5em;
+  text-align: left;
+}
+.form-row > *,
+.form-row label {
+  min-width: 0;
+}
+body {
+  overflow-wrap: break-word;
+}
+@media (max-width: 699px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
 textarea {
   resize: vertical;
 }
@@ -5855,6 +5891,11 @@ textarea::placeholder {
 /* Everything else after the hero gets a little breathing room. */
 .today-hero + :not(.today-next) {
   margin-top: 1.2rem;
+}
+
+/* The schedule grid has no margin of its own, so give whatever follows it the same room. */
+.today-page > .page-grid:not(:last-child) {
+  margin-bottom: 1.2rem;
 }
 
 @media (max-width: 699px) {
@@ -10832,3 +10873,355 @@ label.guide__search {
   color: var(--ink-soft);
 }
 
+
+/* Welcome: the first few minutes on a new device, before Studio's setup conversation. */
+.welcome {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  background: var(--paper);
+}
+.welcome__card {
+  display: grid;
+  width: min(480px, 100%);
+  overflow: hidden;
+  border-radius: 1.6rem;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.welcome__art {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+.welcome__body {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.3rem 1.3rem 1.4rem;
+}
+.welcome__body h1:focus {
+  outline: none;
+}
+.welcome__body h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.9rem, 7vw, 2.4rem);
+  line-height: 1.05;
+}
+.welcome__body p {
+  margin: 0;
+  color: var(--ink-soft);
+}
+.welcome__promises {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.2rem 0;
+  padding: 0;
+  list-style: none;
+}
+.welcome__promises li {
+  position: relative;
+  padding-left: 1.3rem;
+  color: var(--ink-soft);
+}
+.welcome__promises li::before {
+  content: "";
+  position: absolute;
+  top: 0.55em;
+  left: 0.2rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--sage);
+}
+.welcome__steps {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.2rem 0;
+  padding: 0;
+  list-style: none;
+}
+.welcome__steps li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface-soft);
+}
+.welcome__number {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  background: var(--moss-fill, var(--moss));
+  color: #fffaf0;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.welcome__step-text {
+  flex: 1;
+  line-height: 1.35;
+}
+.welcome__step-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+  background: var(--surface);
+  color: #2f7cf6;
+}
+.welcome__link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px dashed var(--line);
+  border-radius: 1rem;
+  background: var(--surface-soft);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.welcome__link span {
+  flex: 1;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.welcome__link small {
+  color: var(--ink-soft);
+}
+.welcome__passcode {
+  display: grid;
+  gap: 0.6rem;
+}
+.welcome__passcode label {
+  display: grid;
+  gap: 0.35rem;
+}
+.welcome__passcode label span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+.welcome__passcode input {
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: var(--surface-soft);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1.05rem;
+}
+.welcome__good,
+.welcome__bad {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.9rem;
+}
+.welcome__good {
+  background: var(--sage-soft);
+  color: var(--moss-dark) !important;
+}
+.welcome__bad {
+  background: var(--peach-soft);
+  color: var(--terracotta) !important;
+}
+.welcome__small {
+  font-size: 0.88rem;
+}
+.welcome__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin-top: 0.3rem;
+}
+.welcome__actions .button {
+  flex: 1;
+  justify-content: center;
+}
+.welcome__back {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+:root[data-theme="dark"] .welcome__good {
+  color: var(--ink) !important;
+}
+:root[data-theme="dark"] .welcome__bad {
+  color: var(--ink) !important;
+}
+
+/* Studio's header: earlier chats and new chat sit beside Close, so they never scroll away. */
+.modal__header-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.35rem;
+}
+.studio-chat.is-history > :not(.chat-history) {
+  display: none;
+}
+.chat-history {
+  display: grid;
+  gap: 0.8rem;
+}
+.chat-history > .text-link {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.chat-history__list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chat-history__row {
+  display: grid;
+  gap: 0.15rem;
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--swipe-radius, 0.9rem);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.chat-history__row strong {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chat-history__row small {
+  color: var(--ink-soft);
+}
+
+/* Today's hero: date and weather, the greeting, one useful line, then the next useful action. */
+.today-hero {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 0.8rem;
+}
+.today-hero__content {
+  align-self: stretch;
+  width: auto;
+  max-width: none;
+}
+.today-hero__weather {
+  white-space: nowrap;
+}
+.today-hero__next {
+  position: relative;
+  z-index: 1;
+}
+.today-hero__next .today-next {
+  margin: 0;
+  box-shadow: var(--shadow);
+}
+.today-page .today-hero__content > p.today-hero__line {
+  display: block;
+  max-width: 32rem;
+  margin: 0.35rem 0 0;
+  color: #fffaf0;
+}
+@media (max-width: 699px) {
+  .today-page .today-hero__content > p.today-hero__line {
+    font-size: 0.92rem;
+    line-height: 1.4;
+  }
+}
+
+/* How much room today: right above the day it shapes. */
+.today-room {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.8rem;
+  margin: 0 0 1rem;
+}
+.today-room > span {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+@media (max-width: 699px) {
+  .today-room .segmented {
+    width: 100%;
+  }
+}
+
+/* Plan: the next few days' forecast, kept small. */
+
+
+/* On phones the hero runs edge to edge, so its cards use the page's own 16px gutter and line up
+   with the cards below. */
+@media (max-width: 699px) {
+  .today-page .today-hero {
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+}
+
+/* Day strip: weekday, date, weather, then a dot per plan. */
+.day-strip button {
+  justify-content: flex-start;
+  gap: 0.3rem;
+  min-height: 0;
+  padding: 0.6rem 0 0.65rem;
+}
+.day-strip button > strong {
+  margin: 0;
+  line-height: 1;
+}
+.day-strip__weather {
+  font-style: normal;
+  font-size: 0.72rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+.day-strip button > small.day-strip__dots {
+  display: flex;
+  gap: 3px;
+  width: auto;
+  height: 6px;
+  margin-top: 0.1rem;
+  border-radius: 0;
+  background: none;
+}
+.day-strip__dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sage);
+}
+.day-strip button.is-selected > small.day-strip__dots {
+  background: none;
+}
+.day-strip button.is-selected .day-strip__dots i {
+  background: #fffaf0;
+}
